@@ -2,7 +2,8 @@ import random
 from itertools import combinations 
 import math 
 import matplotlib.pyplot as plt
-
+from tkinter import *
+from functools import partial
 
 import os
 from shutil import rmtree
@@ -205,17 +206,68 @@ def graficasXgeneracion(self, listNuevaPAptitud,listNuevaFx,index):
     plt.close()
 
 if __name__ == "__main__":
+    def envioDatos(generaciones, poblacionM, rangoMax, rangoMin, intervalo, mutacionInd, mutacionGen):
+        print("generaciones :", generaciones.get())
+        print("poblacionM :", poblacionM.get())
+        print("rangoMaximo :", rangoMax.get())
+        print("rangoMinimo :", rangoMin.get())
+        print("Intervalo :", intervalo.get())
+        print("Mutacion individuo :", mutacionInd.get())
+        print("Mutacion gen :", mutacionGen.get())
+
+        return
+    #window
+    tkWindow = Tk()  
+    tkWindow.geometry('400x250')  
+    tkWindow.title('Tkinter Login Form - pythonexamples.org')
+    #----
+    usernameLabel = Label(tkWindow, text="Generaciones").grid(row=0, column=0)
+    generaciones = IntVar()
+    generacionesEntry = Entry(tkWindow, textvariable=generaciones).grid(row=0, column=1)      
+    #-----
+    poblacionMLabel = Label(tkWindow,text="Poblacion Maxima").grid(row=1, column=0)  
+    poblacionM = DoubleVar()
+    poblacionMEntry = Entry(tkWindow, textvariable=poblacionM).grid(row=1, column=1)
+    #-----
+    poblacionMLabel = Label(tkWindow,text="Rango maximo").grid(row=2, column=0)  
+    rangoMaximo = DoubleVar()
+    rangoMaximoEntry = Entry(tkWindow, textvariable=rangoMaximo).grid(row=2, column=1)
+    #-----
+    poblacionMLabel = Label(tkWindow,text="Rango minimo").grid(row=3, column=0)  
+    rangoMinimo = DoubleVar()
+    rangoMinimoEntry = Entry(tkWindow, textvariable=rangoMinimo).grid(row=3, column=1)
+    #-----
+    poblacionMLabel = Label(tkWindow,text="Intervalo").grid(row=4, column=0)  
+    intervalo = DoubleVar()
+    intervaloEntry = Entry(tkWindow, textvariable=intervalo).grid(row=4, column=1)
+    #-----
+    poblacionMLabel = Label(tkWindow,text="Mutacion del individuo").grid(row=5, column=0)  
+    mutacionIndividuo = DoubleVar()
+    mutacionIndividuoEntry = Entry(tkWindow, textvariable=mutacionIndividuo).grid(row=5, column=1)
+    #-----
+    poblacionMLabel = Label(tkWindow,text="Mutacion del gen").grid(row=6, column=0)  
+    mutacionGen = DoubleVar()
+    mutacionGenEntry = Entry(tkWindow, textvariable=mutacionGen).grid(row=6, column=1)
+    
+
+    envioDatos = partial(envioDatos, generaciones, poblacionM, rangoMaximo, rangoMinimo, intervalo, mutacionIndividuo, mutacionGen)
+    #login button
+    btnEnviar = Button(tkWindow, text="Enviar", command=envioDatos).grid(row=7, column=0)  
+
+    tkWindow.mainloop()
+
+
     print("Generaciones: ")
-    generaciones = int(input()) 
+    generaciones = generaciones.get()
     print("Población maxima")
-    poblacionMaxima = int(input())
+    poblacionMaxima = poblacionM.get()
     poblacionInicial = random.randint(2,poblacionMaxima)
     print("Rango Maximo")
-    xMaximo = float(input())
+    xMaximo = rangoMaximo.get()
     print("Rango Minimo")
-    xMinimo = float(input())
+    xMinimo = rangoMinimo.get()
     print("Intervalo")
-    intervalo = float(input())
+    intervalo = intervalo.get()
     rango = xMaximo-xMinimo 
     puntos = (rango/intervalo)+1 
     bit= bin(int(puntos))
@@ -223,9 +275,9 @@ if __name__ == "__main__":
     noBits= len(bit)
     print(noBits)
     print("Ingrese la probabilidad de mutación del inidividuo")
-    Pmi= float(input())
+    Pmi= mutacionIndividuo.get()
     print("Ingrese la probabilidad de mutacion de gen")
-    Pmg= float(input())
+    Pmg= mutacionGen.get()
     
     ag = AlgoritmoGenetico(xMinimo, xMaximo, intervalo, rango, puntos, poblacionMaxima, poblacionInicial, generaciones, noBits, Pmi,Pmg)
     
@@ -252,21 +304,31 @@ if __name__ == "__main__":
         peoresAptitudes = [individuo.Y for individuo in ag.individuos]
         PeoresIndividuos.append(min(peoresAptitudes))
         print(i)
-    print("_____MEJORES_____\n" , MejoresIndividuos)
-    print("______PROMEDIO_____\n", MediaIndividuos)
-    print("_____PEOR_____\n", PeoresIndividuos)
+    # print("_____MEJORES_____\n" , MejoresIndividuos)
+    # print("______PROMEDIO_____\n", MediaIndividuos)
+    # print("_____PEOR_____\n", PeoresIndividuos)
         
-    try:
-        rmtree("assets")
-    except:
-        pass 
-    os.makedirs("assets\Video", exist_ok=True)
+        try:
+            os.rmdir("assets")
+        except:
+            pass 
+        os.makedirs("assets\Video", exist_ok=True)
 
-    plt.plot(MejoresIndividuos, label="Mejor individuo", color="red", linestyle="-",)
-    plt.plot(MediaIndividuos, label="Promedio", color="blue", linestyle="-",)
-    plt.plot(PeoresIndividuos, label="Peor individuo", color="green", linestyle="-")
-    plt.legend()
-    os.makedirs("assets\Grafica", exist_ok=True)
-    plt.savefig("assets\Grafica\GraficaHistorial.png")
-    plt.close()
- 
+        plt.plot(MejoresIndividuos, label="Mejor individuo", color="red", linestyle="-",)
+        plt.plot(MediaIndividuos, label="Promedio", color="blue", linestyle="-",)
+        plt.plot(PeoresIndividuos, label="Peor individuo", color="green", linestyle="-")
+        plt.legend()
+        os.makedirs("assets\Grafica", exist_ok=True)
+        plt.savefig("assets\Grafica\GraficaHistorial.png")
+        plt.close()
+
+
+        TodaslasX = [individuo.X for individuo in ag.individuos]
+        print(TodaslasX)
+        TodaslasY = [individuo.Y for individuo in ag.individuos]
+        print(TodaslasY)
+        fig, ax = plt.subplots()
+        ax.scatter(x = TodaslasX, y = TodaslasY)
+        os.makedirs("assets\GraficaxGeneracion", exist_ok=True)
+        plt.savefig('assets\GraficaxGeneracion\GraficaHistorial'+str(i)+'.png')
+        plt.close()
