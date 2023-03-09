@@ -21,7 +21,7 @@ class Individuo():
 
 class AlgoritmoGenetico():  
 
-    def __init__(self, Xmin,Xmax, intervalo, rango, puntos, poblacionMaxima, poblacionInicial, generaciones,noBits, Pmi,Pmg):
+    def __init__(self, Xmin,Xmax, intervalo, rango, puntos, poblacionMaxima, poblacionInicial, generaciones,noBits, Pmi,Pmg, Pc):
         self.Xmin = Xmin
         self.intervalo = intervalo
         self.Xmax = Xmax
@@ -32,7 +32,7 @@ class AlgoritmoGenetico():
         self.generaciones = generaciones
         self.noBits = noBits
         self.individuos = []
-        self.probabilidadDeCruce = .50
+        self.probabilidadDeCruce = Pc
         self.Pmi = Pmi
         self.Pmg = Pmg
         
@@ -206,7 +206,7 @@ def graficasXgeneracion(self, listNuevaPAptitud,listNuevaFx,index):
     plt.close()
 
 if __name__ == "__main__":
-    def envioDatos(generaciones, poblacionM, rangoMax, rangoMin, intervalo, mutacionInd, mutacionGen):
+    def envioDatos(generaciones, poblacionM, rangoMax, rangoMin, intervalo, mutacionInd, mutacionGen, probCruza):
         print("generaciones :", generaciones.get())
         print("poblacionM :", poblacionM.get())
         print("rangoMaximo :", rangoMax.get())
@@ -214,12 +214,13 @@ if __name__ == "__main__":
         print("Intervalo :", intervalo.get())
         print("Mutacion individuo :", mutacionInd.get())
         print("Mutacion gen :", mutacionGen.get())
+        print("Probabilida de cruza: ", probCruza.get())
 
         return
     #window
     tkWindow = Tk()  
     tkWindow.geometry('400x250')  
-    tkWindow.title('Tkinter Login Form - pythonexamples.org')
+    tkWindow.title('Obtencion de datos')
     #----
     usernameLabel = Label(tkWindow, text="Generaciones").grid(row=0, column=0)
     generaciones = IntVar()
@@ -248,11 +249,15 @@ if __name__ == "__main__":
     poblacionMLabel = Label(tkWindow,text="Mutacion del gen").grid(row=6, column=0)  
     mutacionGen = DoubleVar()
     mutacionGenEntry = Entry(tkWindow, textvariable=mutacionGen).grid(row=6, column=1)
+
+    probabilidadCruzaLabel = Label(tkWindow,text="Probabilidad de cruza").grid(row=7, column=0)  
+    probCruza = DoubleVar()
+    probCruzaEntry = Entry(tkWindow, textvariable=probCruza).grid(row=7, column=1)
     
 
-    envioDatos = partial(envioDatos, generaciones, poblacionM, rangoMaximo, rangoMinimo, intervalo, mutacionIndividuo, mutacionGen)
+    envioDatos = partial(envioDatos, generaciones, poblacionM, rangoMaximo, rangoMinimo, intervalo, mutacionIndividuo, mutacionGen, probCruza)
     #login button
-    btnEnviar = Button(tkWindow, text="Enviar", command=envioDatos).grid(row=7, column=0)  
+    btnEnviar = Button(tkWindow, text="Enviar", command=envioDatos).grid(row=8, column=0)  
 
     tkWindow.mainloop()
 
@@ -278,8 +283,10 @@ if __name__ == "__main__":
     Pmi= mutacionIndividuo.get()
     print("Ingrese la probabilidad de mutacion de gen")
     Pmg= mutacionGen.get()
+    print("Ingrese la probabilidad de cruza")
+    Pc= probCruza.get()
     
-    ag = AlgoritmoGenetico(xMinimo, xMaximo, intervalo, rango, puntos, poblacionMaxima, poblacionInicial, generaciones, noBits, Pmi,Pmg)
+    ag = AlgoritmoGenetico(xMinimo, xMaximo, intervalo, rango, puntos, poblacionMaxima, poblacionInicial, generaciones, noBits, Pmi,Pmg, Pc)
     
     ag.generarPoblacionInicial()
 
